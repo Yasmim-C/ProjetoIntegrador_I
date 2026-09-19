@@ -1,0 +1,16 @@
+# O .gitignore serve para deixar de fora arquivos com dados de credenciais 
+# e arquivos de configurações locais
+
+# Ambiente virtual
+.venv/
+
+
+
+# Cache e arquivos compilados do Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Caso utilize o .Env para credenciais sensiveis
+.env
+.LICENSE
