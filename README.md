@@ -21,9 +21,15 @@ Explorar dados agrícolas e preparar uma base para o estudo e a previsão do ATR
 
 ## Desenvolvimento atual
 
+### Dados de demonstração para o repositório
+
+O conjunto em [dados ficticios](dados%20ficticios/LEIA-ME.md) contém **26 CSVs inteiramente sintéticos**, organizados em análises de solo, preços de ATR e produção de cana. Os dados servem para demonstração e não representam resultados reais. Os cabeçalhos e formatos seguem as fontes de referência; o notebook atual ainda precisa ser adaptado para essas estruturas.
+
+Os arquivos fictícios estão disponíveis diretamente no repositório. A pasta `dados brutos/` está excluída do versionamento pelo `.gitignore`.
+
 O notebook [Interdisciplinar_CYBEL.ipynb](notebooks/Interdisciplinar_CYBEL.ipynb) contém:
 
-- Importação de um arquivo CSV pelo Google Colab.
+- Leitura de um arquivo CSV local no VS Code.
 - Inspeção da estrutura, dos tipos de dados, dos valores ausentes e dos registros duplicados.
 - Estatísticas descritivas e levantamento de talhões e área cadastrada.
 - Seleção das variáveis de entrada e do ATR como variável alvo.
@@ -31,7 +37,7 @@ O notebook [Interdisciplinar_CYBEL.ipynb](notebooks/Interdisciplinar_CYBEL.ipynb
 - Conversão de variedade e textura do solo em códigos numéricos.
 - Cálculos iniciais de médias de vigor da soqueira e ATR.
 
-O projeto está em desenvolvimento. O notebook ainda não apresenta um modelo preditivo treinado nem métricas de avaliação. As pastas de dados e resultados estão reservadas para as próximas etapas; a base CSV precisa ser fornecida para executar a análise.
+O projeto está em desenvolvimento. O notebook ainda não apresenta um modelo preditivo treinado nem métricas de avaliação. O conjunto fictício disponível tem estruturas diferentes da base originalmente esperada pelo notebook; sua execução requer adaptação ou o fornecimento de uma base com as colunas descritas abaixo.
 
 ## Tecnologias
 
@@ -42,7 +48,7 @@ O projeto está em desenvolvimento. O notebook ainda não apresenta um modelo pr
 | NumPy | Operações numéricas; incluído nas dependências. |
 | Matplotlib | Construção de gráficos; incluído nas dependências. |
 | OpenPyXL | Suporte a arquivos Excel; incluído nas dependências. |
-| Google Colab / notebooks Jupyter | Organização e execução dos códigos em células. O notebook atual utiliza recursos do Colab. |
+| VS Code com extensões Python e Jupyter | Abertura e execução local do notebook em células. |
 | Streamlit | Possível interface para apresentação das análises; incluído nas dependências, com uso ainda em definição. |
 
 As dependências e suas versões estão registradas em [requirements.txt](requirements.txt).
@@ -91,6 +97,7 @@ Instale as dependências:
 
 ```powershell
 python -m pip install -r requirements.txt
+python -m pip install ipykernel
 ```
 
 Para encerrar o ambiente virtual:
@@ -99,15 +106,19 @@ Para encerrar o ambiente virtual:
 deactivate
 ```
 
-## Execução do notebook
+## Execução do notebook no VS Code
 
-1. Abra o Google Colab e importe `notebooks/Interdisciplinar_CYBEL.ipynb`.
-2. Execute a primeira célula e selecione a base CSV quando solicitado.
-3. Execute as demais células na ordem em que aparecem.
+1. Abra a pasta `ProjetoIntegrador_I` no VS Code, usando **Arquivo → Abrir Pasta**.
+2. Instale as extensões **Python** e **Jupyter**, da Microsoft.
+3. Configure o ambiente local conforme as instruções acima, usando o terminal integrado do VS Code.
+4. Abra `notebooks/Interdisciplinar_CYBEL.ipynb` no editor de notebooks.
+5. Clique em **Selecionar Kernel** e escolha o ambiente `.venv` do projeto.
+6. Na primeira célula, ajuste `caminho_csv` para o arquivo desejado, com caminho relativo à raiz do projeto. O exemplo fornecido lê `dados ficticios/producao_cana/Cana.csv`.
+7. Execute a primeira célula pelo botão ao lado dela ou com **Shift+Enter**. Execute as demais células em ordem quando a base tiver as colunas necessárias.
 
-A leitura atual utiliza separador `,`, decimal `,` e codificação `utf-8-sig`. A base deve conter as colunas utilizadas nas análises, incluindo `talhao`, `area_ha`, `falhas_soqueira_pct`, `vigor_soqueira_pct`, `variedade`, `textura_solo`, `numero_corte`, `safra` e `atr_kg_ton`.
+A leitura local usa `pandas.read_csv()`, separador `;`, ponto decimal (`.`) e codificação `utf-8-sig`, de acordo com os CSVs do repositório. Ajuste `separador` e `decimal` na primeira célula se utilizar outro formato.
 
-Para executar localmente, será necessário configurar um ambiente de notebooks e adaptar a primeira célula: `google.colab.files.upload()` é específico do Colab e deve ser substituído pela leitura de um arquivo local com `pandas.read_csv()`.
+O arquivo de exemplo permite carregar e inspecionar a produção de cana nas duas primeiras células. As análises seguintes ainda exigem uma base preparada com `talhao`, `area_ha`, `falhas_soqueira_pct`, `vigor_soqueira_pct`, `variedade`, `textura_solo`, `numero_corte`, `safra` e `atr_kg_ton`. Os CSVs disponíveis não fornecem todas essas colunas; será necessário adaptar as etapas seguintes ou preparar uma base compatível antes de executar o notebook inteiro.
 
 ## Licença
 
