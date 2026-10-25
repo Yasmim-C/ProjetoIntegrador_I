@@ -21,11 +21,9 @@ Explorar dados agrícolas e preparar uma base para o estudo e a previsão do ATR
 
 ## Desenvolvimento atual
 
-### Dados de demonstração para o repositório
+### Dados locais
 
-O conjunto em [dados ficticios](dados%20ficticios/LEIA-ME.md) contém **26 CSVs inteiramente sintéticos**, organizados em análises de solo, preços de ATR e produção de cana. Os dados servem para demonstração e não representam resultados reais. Os cabeçalhos e formatos seguem as fontes de referência; o notebook atual ainda precisa ser adaptado para essas estruturas.
-
-Os arquivos fictícios estão disponíveis diretamente no repositório. A pasta `dados brutos/` está excluída do versionamento pelo `.gitignore`.
+As bases CSV devem ser fornecidas localmente. As pastas de dados brutos e fictícios estão excluídas do versionamento pelo `.gitignore`; os arquivos não são distribuídos com o repositório.
 
 O notebook [Interdisciplinar_CYBEL.ipynb](notebooks/Interdisciplinar_CYBEL.ipynb) contém:
 
@@ -37,7 +35,7 @@ O notebook [Interdisciplinar_CYBEL.ipynb](notebooks/Interdisciplinar_CYBEL.ipynb
 - Conversão de variedade e textura do solo em códigos numéricos.
 - Cálculos iniciais de médias de vigor da soqueira e ATR.
 
-O projeto está em desenvolvimento. O notebook ainda não apresenta um modelo preditivo treinado nem métricas de avaliação. O conjunto fictício disponível tem estruturas diferentes da base originalmente esperada pelo notebook; sua execução requer adaptação ou o fornecimento de uma base com as colunas descritas abaixo.
+O projeto está em desenvolvimento. O notebook ainda não apresenta um modelo preditivo treinado nem métricas de avaliação. Sua execução requer uma base local com as colunas descritas abaixo ou adaptação das análises às fontes utilizadas.
 
 ## Tecnologias
 
@@ -113,12 +111,12 @@ deactivate
 3. Configure o ambiente local conforme as instruções acima, usando o terminal integrado do VS Code.
 4. Abra `notebooks/Interdisciplinar_CYBEL.ipynb` no editor de notebooks.
 5. Clique em **Selecionar Kernel** e escolha o ambiente `.venv` do projeto.
-6. Na primeira célula, ajuste `caminho_csv` para o arquivo desejado, com caminho relativo à raiz do projeto. O exemplo fornecido lê `dados ficticios/producao_cana/Cana.csv`.
+6. Na primeira célula, ajuste `caminho_csv` para o arquivo local desejado, com caminho relativo à raiz do projeto. O caminho `dados tratados/base_modelo.csv` é uma sugestão; o arquivo deve ser preparado e fornecido localmente.
 7. Execute a primeira célula pelo botão ao lado dela ou com **Shift+Enter**. Execute as demais células em ordem quando a base tiver as colunas necessárias.
 
-A leitura local usa `pandas.read_csv()`, separador `;`, ponto decimal (`.`) e codificação `utf-8-sig`, de acordo com os CSVs do repositório. Ajuste `separador` e `decimal` na primeira célula se utilizar outro formato.
+A leitura local usa `pandas.read_csv()`, separador `;`, ponto decimal (`.`) e codificação `utf-8-sig`. Ajuste `separador` e `decimal` na primeira célula conforme o formato do arquivo local.
 
-O arquivo de exemplo permite carregar e inspecionar a produção de cana nas duas primeiras células. As análises seguintes ainda exigem uma base preparada com `talhao`, `area_ha`, `falhas_soqueira_pct`, `vigor_soqueira_pct`, `variedade`, `textura_solo`, `numero_corte`, `safra` e `atr_kg_ton`. Os CSVs disponíveis não fornecem todas essas colunas; será necessário adaptar as etapas seguintes ou preparar uma base compatível antes de executar o notebook inteiro.
+As análises exigem uma base preparada com `talhao`, `area_ha`, `falhas_soqueira_pct`, `vigor_soqueira_pct`, `variedade`, `textura_solo`, `numero_corte`, `safra` e `atr_kg_ton`. Antes de executar o notebook inteiro, forneça uma base compatível ou adapte as etapas às colunas disponíveis.
 
 ## Licença
 

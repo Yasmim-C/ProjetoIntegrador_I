@@ -15,5 +15,6 @@ __pycache__/
 .env
 .LICENSE
 
-# Dados reais e relatórios locais; publicar somente dados fictícios
+# Bases de dados e relatórios mantidos somente no ambiente local
 /dados brutos/
+/dados ficticios/
