@@ -23,15 +23,32 @@ O [notebook](notebooks/CYBEL.ipynb) contém leitura de CSVs, preparação de tab
 
 As fontes disponíveis ainda não formam a base por talhão e safra exigida: faltam registros de soqueira/manejo e ATR correspondente por talhão. O ATR agregado não deve ser repetido em cada amostra de solo para criar exemplos de treinamento.
 
-Os dados originais ficam locais, fora do versionamento. A base fictícia também não é distribuída no repositório. Antes da integração, será necessário harmonizar nomes e unidades: o artigo denomina o alvo `atr`, enquanto o notebook usa `atr_kg_ton`.
+Os dados originais ficam locais, fora do versionamento. A base fictícia também não é distribuída no repositório. Antes da integração, será necessário harmonizar nomes e unidades: o artigo denomina o alvo `atr`, enquanto o notebook atual usa `ATR`.
 
 ```text
 dados brutos/     # Fontes originais locais, excluídas do Git
 dados tratados/   # Destino das bases após limpeza e integração
 notebooks/       # Código e análises
-resultados/      # Destino das avaliações e saídas
 img/             # Imagens da documentação
 ```
+
+## Resultados exploratórios
+
+Os gráficos abaixo foram gerados pelo notebook com as bases locais. O pareamento anual abrange **2020 a 2025**, com seis observações; as variáveis de textura têm somente três anos válidos. As correlações não demonstram causalidade nem desempenho de um modelo preditivo.
+
+**Atributos do solo e ATR.** As barras apresentam a correlação de Pearson e o número de anos válidos (`n`) para cada atributo.
+
+![Correlação dos atributos do solo com o ATR](img/correlacao_solo_atr.png)
+
+**Indicadores da cana e ATR.** PC, Pol e Brix apresentam associações positivas elevadas nesta amostra. São indicadores ligados à qualidade e ao cálculo do ATR; essas associações não comprovam previsão antes da colheita.
+
+![Correlação dos indicadores da cana com o ATR](img/correlacao_cana_atr.png)
+
+**Matriz de correlação.** Resume as associações entre as variáveis selecionadas, permitindo observar também relações entre possíveis entradas do modelo. Cada par utiliza os anos com valores disponíveis.
+
+![Matriz de correlação de Pearson](img/matriz_correlacao_pearson.png)
+
+Os resumos são unidos apenas pelo ano, sem validar correspondência entre propriedades. Portanto, estes resultados são preliminares e precisam dessa conferência antes de interpretações agronômicas.
 
 ## Execução no VS Code
 
@@ -44,9 +61,9 @@ python -m pip install -r requirements.txt
 python -m pip install ipykernel
 ```
 
-Abra `notebooks/CYBEL.ipynb` e selecione o kernel `.venv`. O código atual ainda utiliza `google.colab.files.upload()`; para executá-lo no VS Code, será necessário substituir o bloco de upload pela leitura local dos CSVs com Pandas. O notebook espera arquivos identificados como `DADOS_SOLO`, `Cana.csv` e, opcionalmente, `ART.csv`, com as colunas utilizadas nas células seguintes.
+Abra `notebooks/CYBEL.ipynb` e selecione o kernel `.venv`. A primeira célula lê os CSVs da pasta `dados tratados`. O notebook espera arquivos identificados como `DADOS_SOLO`, `Cana.csv` e, opcionalmente, `ART.csv`, com as colunas utilizadas nas células seguintes.
 
-Após adaptar a leitura, execute as células em ordem com **Shift+Enter**. As bases precisam ser fornecidas localmente; não são distribuídas no repositório.
+Execute as células em ordem com **Shift+Enter**. Os CSVs utilizados estão disponíveis na pasta `dados tratados` do repositório; os arquivos de `dados brutos` permanecem locais.
 
 **Ferramentas:** Python, Pandas, NumPy e Matplotlib; Seaborn e scikit-learn previstos nas próximas etapas. GitHub para versionamento, Trello para tarefas e Overleaf para redação do artigo.
 
