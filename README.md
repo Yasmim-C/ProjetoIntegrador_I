@@ -1,10 +1,10 @@
-# Projeto Integrador I — Solo, soqueira e ATR da cana-de-açúcar
+# Projeto Integrador I — Solo, características da cana e ATR da cana-de-açúcar
 
-Repositório do artigo “Análise da influência das características do solo e da saúde da soqueira no ATR da cana-de-açúcar”, desenvolvido em 2026 no Curso Superior de Tecnologia em Ciência de Dados para o Agronegócio da FATEC Catanduva.
+Repositório do artigo “Análise da influência das características do solo no ATR da cana-de-açúcar”, desenvolvido em 2026 no Curso Superior de Tecnologia em Ciência de Dados para o Agronegócio da FATEC Catanduva.
 
 ## Objetivo e escopo
 
-Analisar a influência dos atributos do solo e da saúde da soqueira no ATR (Açúcar Total Recuperável, em kg/t de cana) e avaliar sua estimativa antes da colheita, apoiando o planejamento da produção e da receita do produtor.
+Analisar a influência dos atributos do solo e das características do solo no ATR (Açúcar Total Recuperável, em kg/t de cana) e avaliar sua estimativa antes da colheita, apoiando o planejamento da produção e da receita do produtor.
 
 O artigo propõe uma pesquisa aplicada e quantitativa, exploratória, descritiva e preditiva, em estudo de caso em Marapoama-SP, região de Catanduva, com dados fornecidos pela Associação dos Fornecedores de Cana da Região de Catanduva (AFCRC). A unidade analítica prevista é uma linha por talhão e safra.
 
@@ -12,79 +12,95 @@ O artigo propõe uma pesquisa aplicada e quantitativa, exploratória, descritiva
 
 O estudo adota o CRISP-DM para organizar entendimento do negócio e dos dados, preparação, modelagem, avaliação e implantação, conforme o avanço do projeto.
 
-- **Dados:** laudos de solo, registros de soqueira e manejo e boletins de ATR; precipitação como variável complementar, se disponível.
+- **Dados:** laudos de solo, características do solo e manejo e boletins de ATR; precipitação como variável complementar, se disponível.
 - **Preparação:** limpeza, padronização de unidades e identificação dos talhões, análise de ausências e inconsistências e integração por talhão e safra.
 - **Análise e modelo:** estatística descritiva, correlações de Pearson/Spearman e regressão linear simples para estimar o ATR a partir de uma única variável explicativa, ainda a definir. Os demais atributos podem ser explorados sem integrar simultaneamente esse modelo.
 - **Avaliação:** treino/teste na proporção 80/20 proposta no artigo e métricas R², MAE e RMSE. A divisão em treino/teste e as métricas MAE e RMSE ainda precisam ser implementadas, com uma estratégia de separação que considere a ordem temporal dos dados. O R² atual é calculado na própria amostra de ajuste.
 
-## Estado atual e dados
+## Notebook e dados
 
-O [notebook](notebooks/CYBEL.ipynb) contém células de texto que contextualizam cada etapa e implementa:
+O [notebook CYBEL](notebooks/CYBEL.ipynb) explora associações entre atributos do solo, indicadores da cana entregue à usina e ATR. A unidade da análise principal é o **ano civil**. A tabela `dados_anual` reúne seis anos em comum, de 2020 a 2025. O relatório de cana também inclui 2026, mas a base de solo não tem registros pareados para esse ano.
 
-- Leitura e conferência dos CSVs, incluindo dimensões, colunas e valores ausentes.
-- Preparação das tabelas anuais: médias do solo por propriedade, talhão e ano, seguidas de médias anuais; somas e médias ponderadas pela tonelagem para os indicadores da cana.
-- Correlações de Pearson calculadas com laços, gráficos de barras e matriz de correlação.
-- Conferência descritiva do Brix e de sua correlação com o ATR na tabela original de cana, sem a agregação anual.
-- Gráficos de dispersão do ATR em relação à acidez potencial, ao fósforo, ao potássio e ao pH do solo, com identificação dos pontos pelo ano.
-- Cinco ajustes de regressão linear simples, um para cada atributo: pH do solo, acidez potencial, fósforo, potássio e argila. O NumPy ajusta as retas por mínimos quadrados (`np.polyfit`), e cada gráfico apresenta a tendência, o R² e o número de observações; a equação é impressa na saída.
+| Arquivo em `dados tratados` | Conteúdo                                                                                                                            |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `DADOS_SOLO_tratados.csv`   | Laudos de solo com data da amostragem, propriedade, talhão, variedade e atributos químicos e de textura.                           |
+| `Cana.csv`                  | Relatório de cana com período, fazenda, tonelagem, cargas e indicadores de qualidade, incluindo ATR.                               |
+| `ART.csv` (opcional)        | Preços relacionados ao ATR por período. Esses valores ficam disponíveis para consulta e não entram nos cálculos desta análise. |
 
-Já há regressões ajustadas, mas ainda não há avaliação em dados de teste. O R² apresentado descreve o ajuste nos mesmos dados utilizados para calcular a reta. Não há divisão em treino/teste, cálculo de MAE/RMSE ou correlação de Spearman implementados. Cada regressão utiliza apenas um atributo; não há modelo com todos os atributos simultaneamente.
+Os arquivos de `dados brutos` ficam fora do versionamento. As figuras do README ficam em `img`.
 
-A integração atual é por ano civil, extraído das datas de solo e do fim do período da cana, e difere da unidade por talhão e safra prevista no artigo. Embora alguns rótulos dos gráficos usem “safras”, os pontos representam anos civis.
+## Guia do notebook
 
-As fontes disponíveis ainda não formam a base por talhão e safra exigida: faltam registros de soqueira/manejo e ATR correspondente por talhão. O ATR agregado não deve ser repetido em cada amostra de solo para criar exemplos de treinamento.
+Os blocos de texto do notebook explicam cada uma das 15 etapas de execução. A tabela resume a sequência e as principais saídas.
 
-Os dados originais ficam locais, fora do versionamento. A base fictícia também não é distribuída no repositório. Antes da integração, será necessário harmonizar nomes e unidades: o artigo denomina o alvo `atr`, enquanto o notebook atual usa `ATR`.
-
-```text
-dados brutos/     # Fontes originais locais, excluídas do Git
-dados tratados/   # CSVs de solo e cana utilizados pelo notebook
-notebooks/       # Notebook com contextualização, código e saídas
-img/             # Imagens da documentação
-resultados/      # Resultados locais, excluídos do Git
-```
-
-## Resultados exploratórios
-
-Os gráficos abaixo foram gerados pelo notebook com as bases locais. O pareamento anual abrange 2020 a 2025, com seis observações; as variáveis de textura têm somente três anos válidos. As correlações não demonstram causalidade nem desempenho de um modelo preditivo.
-
-Atributos do solo e ATR. As barras apresentam a correlação de Pearson e o número de anos válidos (`n`) para cada atributo.
-
-![Correlação dos atributos do solo com o ATR](img/correlacao_solo_atr.png)
-
-Indicadores da cana e ATR. PC, Pol e Brix apresentam associações positivas elevadas nesta amostra. São indicadores ligados à qualidade e ao cálculo do ATR; essas associações não comprovam previsão antes da colheita.
-
-![Correlação dos indicadores da cana com o ATR](img/correlacao_cana_atr.png)
-
-Matriz de correlação. Resume as associações entre as variáveis selecionadas, permitindo observar também relações entre possíveis entradas do modelo. Cada par utiliza os anos com valores disponíveis.
-
-![Matriz de correlação de Pearson](img/matriz_correlacao_pearson.png)
-
-Dispersões e regressões. As novas visualizações estão nas saídas do [notebook](notebooks/CYBEL.ipynb). Os gráficos de dispersão mostram os pares anuais disponíveis e a correlação de Pearson. Os gráficos de regressão acrescentam a reta ajustada, sua equação e o R² na própria amostra. O ajuste exige pelo menos três observações; a regressão com argila utiliza somente os três anos com dados de textura. Esses resultados ainda não validam uma estimativa de ATR em anos futuros.
-
-Os resumos são unidos apenas pelo ano, sem validar correspondência entre propriedades. Portanto, estes resultados são preliminares e precisam dessa conferência antes de interpretações agronômicas.
+| Etapas                                     | O que o notebook faz                                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1–2. Leitura e integração               | Lê os CSVs, confere cabeçalhos e ausências e filtra as linhas de fazenda para excluir os totais do relatório. Calcula médias de solo por propriedade, talhão e ano e dá o mesmo peso a cada grupo com valor disponível. Soma toneladas e cargas e pondera os indicadores da cana pela tonelagem. Combina as tabelas pelo ano da amostragem do solo e pelo ano de `Data_Final` da cana. |
+| 3–5. Variedades e médias                 | Resume atributos do solo em `media_anual_por_variedade` e conta os talhões amostrados por variedade em cada ano. Compara essa participação com o ATR anual agregado da fazenda. Calcula também as médias dos valores disponíveis em `dados_anual`.                                                                                                                                     |
+| 6–9. Correlações                        | Calcula Pearson para os pares anuais disponíveis, imprime o coeficiente e a contagem de pares e gera gráficos de barras e um mapa de calor. O cálculo exige pelo menos três pares e variação nas duas séries.                                                                                                                                                                             |
+| 10–13. Dispersões e regressões          | Mostra pontos identificados pelo ano e tenta ajustar uma regressão linear simples para cada atributo selecionado. Cada ajuste usa um atributo por vez e exige pelo menos três pares. A equação e o R² são calculados na amostra de ajuste.                                                                                                                                                 |
+| 14–15. Conferência e análise por grupos | Lista os anos com alumínio disponível e procura um CSV detalhado para calcular ATR ponderado por variedade, corte e safra. A etapa exige `Talhao`, `Variedade`, `Corte`, `Ton`, `ATR` e uma referência de safra (`Safra`, `Ano` ou `Data_Final`).                                                                                                                             |
 
 ## Resultados e discussão
 
-O pareamento dos dados de solo e de cana resultou em seis observações anuais, de 2020 a 2025. O ano de 2026 ficou fora dessa comparação por não haver registros de solo correspondentes. A unidade efetivamente analisada foi o ano civil, e não uma safra delimitada por calendário agrícola. A média aritmética dos seis valores anuais de ATR foi de 134,32 kg/t de cana, atribuindo o mesmo peso a cada ano. O ATR aumentou de 138,4 kg/t em 2020 para 143,7 kg/t em 2022, seguido de reduções sucessivas até atingir 122,7 kg/t em 2025.
+As figuras abaixo foram extraídas das saídas salvas no notebook. A média aritmética dos seis valores anuais de ATR foi **134,32 kg/t de cana**. O ATR passou de 138,4 kg/t em 2020 para 143,7 kg/t em 2022 e caiu nos anos seguintes, chegando a 122,7 kg/t em 2025.
 
-Entre os cinco atributos selecionados para as regressões simples, o pH do solo apresentou forte associação linear negativa com o ATR (r = −0,906). A reta ajustada teve inclinação de −26,10, correspondendo a uma diferença estimada de −26,10 kg/t de ATR para cada unidade adicional de pH, dentro do intervalo observado. A acidez potencial apresentou forte associação positiva (r = 0,868), com inclinação de 2,24 kg/t de ATR por unidade do atributo registrada na base. Essas relações descrevem a variação conjunta das médias anuais e não demonstram que alterações no pH ou na acidez tenham causado mudanças no ATR. Tampouco fundamentam recomendações de manejo para aumentar a acidez ou reduzir o pH.
+### Variedades dos talhões amostrados
 
-As associações do fósforo (r = −0,098) e do potássio (r = −0,278) com o ATR foram fracas na amostra analisada. Suas regressões apresentaram inclinações de −0,19 e −2,95 kg/t de ATR por unidade do respectivo atributo. A magnitude dessas inclinações depende das unidades e escalas das variáveis e, por isso, não permite comparar diretamente sua importância. Para a argila, a correlação foi positiva (r = 0,599), com inclinação de 0,06 kg/t por unidade registrada na base. Esse ajuste utilizou **apenas três observações anuais**, o que restringe sua interpretação e reforça a necessidade de conferir os registros de textura antes de conclusões agronômicas.
+As barras mostram a participação de cada variedade na contagem de talhões amostrados com variedade identificada. A linha usa o eixo da direita e representa o ATR anual da fazenda, ponderado pelas toneladas. A participação pode variar com o esforço de amostragem. Para medir a participação na área plantada, seriam necessários dados de área por variedade.
 
-Os indicadores da cana Pol (r = 0,997), PC (r = 0,998) e Brix (r = 0,982) apresentaram correlações positivas elevadas com o ATR na tabela anual pareada. Como estão relacionados à qualidade tecnológica da cana e ao cálculo do ATR, essas associações não constituem evidências independentes de capacidade preditiva antes da colheita. A disponibilidade desses indicadores no momento em que se pretende estimar o ATR também precisa ser considerada em uma futura modelagem.
+![Participação das variedades nos talhões amostrados e ATR anual da fazenda](img/participacao_variedades_atr.png)
 
-Os gráficos de dispersão permitiram identificar os anos e examinar visualmente a direção das associações. As retas de regressão sintetizaram essas tendências, mas foram ajustadas com somente seis pontos — ou três, no caso da argila — e podem ser fortemente influenciadas por observações individuais. O R² foi calculado nos mesmos dados utilizados para ajustar cada reta; portanto, descreve o ajuste na própria amostra e não representa desempenho em anos novos. Não foram realizados divisão em treino/teste, cálculo de MAE/RMSE ou testes de significância estatística.
+### Correlações de Pearson
 
-A agregação anual também limita a interpretação: as médias não representam a variabilidade entre talhões, e a associação observada entre anos não pode ser automaticamente atribuída a cada talhão. Além disso, o pareamento foi realizado somente pelo ano, sem validação automática da correspondência entre propriedades. Informações de manejo, clima e saúde da soqueira não foram incorporadas a esses ajustes, de modo que sua participação nas variações do ATR permanece sem avaliação.
+Entre os atributos selecionados para regressão, pH (r = −0,906) e acidez potencial (r = 0,868) apresentaram as associações mais fortes com o ATR. Fósforo (r = −0,098) e potássio (r = −0,278) tiveram associações fracas. Para alumínio, r = 0,771 com quatro anos válidos. O resultado é sensível a poucos pontos e ao tratamento de 378 zeros como ausentes. Essa regra precisa ser conferida com o laboratório.
 
-## Conclusões
+![Correlação dos atributos do solo com o ATR](img/correlacao_solo_atr.png)
 
-A análise identificou associações entre o ATR e atributos médios anuais do solo no período de 2020 a 2025. Entre os cinco atributos escolhidos para regressão, pH e acidez potencial apresentaram as associações lineares mais fortes, com direções negativa e positiva, respectivamente. Fósforo e potássio apresentaram associações fracas, enquanto a análise de argila ficou limitada a três anos com dados disponíveis. Essa comparação se refere ao conjunto selecionado para regressão, e não a todos os atributos de solo explorados no notebook.
+PC (r = 0,998), Pol (r = 0,997) e Brix (r = 0,982) tiveram correlações elevadas. Esses indicadores estão ligados à qualidade tecnológica da cana e ao cálculo do ATR. Seu uso em um modelo pré-colheita dependeria de estarem disponíveis no momento da estimativa.
 
-Os resultados contribuem para descrever os padrões observados na base estudada e formular novas hipóteses. Entretanto, o número reduzido de observações, a agregação anual e a ausência de avaliação em dados independentes impedem concluir que os atributos do solo causaram as variações do ATR ou que as regressões estejam validadas para previsão antes da colheita. A influência da saúde da soqueira, prevista no objetivo do projeto, permanece uma etapa a investigar quando houver dados adequados.
+![Correlação dos indicadores da cana com o ATR](img/correlacao_cana_atr.png)
 
-Para avançar, propõe-se conferir a consistência e as unidades dos registros de textura, validar a correspondência entre propriedades e, conforme a disponibilidade das fontes, integrar solo e cana por **talhão e safra**. A ampliação da série histórica e a inclusão de informações de manejo, clima e saúde da soqueira podem apoiar uma análise mais completa. Uma futura avaliação preditiva deverá respeitar a ordem temporal dos dados e utilizar observações independentes, evitando atribuir ao solo efeitos que a análise atual não permite distinguir.
+A matriz mostra as associações entre um subconjunto dos atributos do solo e o ATR. Cada par usa os anos disponíveis para as duas variáveis, por isso os coeficientes podem ter números diferentes de observações. As células cinzas, com `s/d`, indicam coeficientes indisponíveis.
+
+![Mapa de calor das correlações de Pearson](img/matriz_correlacao_pearson.png)
+
+### Dispersões e regressões lineares
+
+Cada ponto representa um ano civil. As dispersões permitem identificar quais anos sustentam as tendências e observar pontos que se afastam dos demais.
+
+<details>
+<summary>Ver os quatro gráficos de dispersão</summary>
+
+![Dispersão de acidez potencial e ATR](img/dispersao_acidez_atr.png)
+![Dispersão de fósforo e ATR](img/dispersao_fosforo_atr.png)
+![Dispersão de potássio e ATR](img/dispersao_potassio_atr.png)
+![Dispersão de pH do solo e ATR](img/dispersao_ph_atr.png)
+
+</details>
+
+A execução salva gerou quatro regressões com seis observações cada. As inclinações foram −26,10 para pH, 2,24 para acidez potencial, −0,19 para fósforo e −2,95 para potássio, em kg/t de ATR por unidade do respectivo atributo. As escalas dos atributos diferem, portanto as inclinações não medem diretamente sua importância relativa. A argila tinha apenas dois anos válidos e ficou abaixo do mínimo de três para calcular a correlação e ajustar uma reta.
+
+![Regressão linear do ATR em função do pH do solo](img/regressao_ph_atr.png)
+
+<details>
+<summary>Ver os outros três gráficos de regressão</summary>
+
+![Regressão linear do ATR em função da acidez potencial](img/regressao_acidez_atr.png)
+![Regressão linear do ATR em função do fósforo](img/regressao_fosforo_atr.png)
+![Regressão linear do ATR em função do potássio](img/regressao_potassio_atr.png)
+
+</details>
+
+## Conclusões e limitações
+
+Os resultados descrevem associações entre médias anuais e ajudam a formular hipóteses. O pareamento pelo ano civil não confirma a correspondência por propriedade ou talhão, nem garante que a amostragem de solo antecedeu o período avaliado da cana. Com seis observações e R² calculado na própria amostra, os ajustes ainda precisam de avaliação em dados independentes para sustentar uma previsão. A análise atual também não incorpora medidas de saúde da soqueira.
+
+A composição das variedades pode ser descrita para os talhões amostrados. Para estimar ATR por variedade e corte, falta uma base de cana que identifique esses grupos e contenha as respectivas toneladas e medições de ATR. Na execução salva, a etapa final indicou a ausência de `Talhao`, `Variedade` e `Corte` na base de cana. Antes de interpretar os resultados agronomicamente, é necessário conferir a codificação dos zeros de alumínio, os registros de textura e as unidades dos laudos.
+
+## Execução no Google Colab
+
+Abra `notebooks/CYBEL.ipynb` no Colab e coloque os CSVs em `/content/ProjetoIntegrador_I/dados tratados` ou `/content/dados tratados`. A primeira célula lê os arquivos da pasta, detecta o separador e aceita UTF-8 com ou sem BOM. Execute as células em ordem. Após trocar os arquivos ou os critérios de tratamento, reexecute o notebook para atualizar as saídas.
 
 ## Execução no VS Code
 
@@ -102,14 +118,14 @@ Use **Run All / Executar Tudo** para executar todas as células em ordem, ou **S
 
 **Dependências do ambiente:** `requirements.txt` contém as bibliotecas diretamente utilizadas e o kernel necessário para executar o notebook no VS Code:
 
-| Ferramenta | Uso no projeto |
-| --- | --- |
-| Pandas | Leitura dos CSVs, preparação das tabelas, datas e conferências estatísticas. |
-| NumPy | Ajuste das regressões lineares com `polyfit` e ordenação dos pontos com `argsort`. |
-| Matplotlib | Gráficos de barras, matriz de correlação, dispersões e retas de regressão. |
-| ipykernel | Execução do notebook no kernel Python do ambiente `.venv`. |
+| Ferramenta | Uso no projeto                                                                            |
+| ---------- | ----------------------------------------------------------------------------------------- |
+| Pandas     | Leitura dos CSVs, preparação das tabelas, datas e conferências estatísticas.          |
+| NumPy      | Ajuste das regressões lineares com `polyfit` e ordenação dos pontos com `argsort`. |
+| Matplotlib | Gráficos de barras, matriz de correlação, dispersões e retas de regressão.           |
+| ipykernel  | Execução do notebook no kernel Python do ambiente `.venv`.                            |
 
-As versões registradas correspondem ao ambiente utilizado na execução atual. As dependências internas dessas bibliotecas são instaladas automaticamente pelo pip. `pathlib` e `io` fazem parte da biblioteca padrão do Python e não exigem instalação separada.
+As versões registradas correspondem ao ambiente local do projeto. As dependências internas dessas bibliotecas são instaladas automaticamente pelo pip. `pathlib` faz parte da biblioteca padrão do Python.
 
 **Organização do trabalho:** Git/GitHub para versionamento, Trello para tarefas e Overleaf para redação do artigo.
 
